@@ -17,3 +17,4 @@ SELECT student.SID ,student.SNAME,COUNT(SC.CID) , SUM(sc.score) FROM student LEF
 SELECT student.SID ,student.SNAME,COUNT(SC.CID) , SUM(sc.score) FROM student LEFT JOIN sc ON student.Sid= SC.Sid GROUP BY student.SID, student.SNAME;
 
 #4.查询姓“李”的老师的个数；
+select count(teacher.tid)from teacher where teacher.tname like'李%';
