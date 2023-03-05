@@ -17,4 +17,19 @@ SELECT student.SID ,student.SNAME,COUNT(SC.CID) , SUM(sc.score) FROM student LEF
 SELECT student.SID ,student.SNAME,COUNT(SC.CID) , SUM(sc.score) FROM student LEFT JOIN sc ON student.Sid= SC.Sid GROUP BY student.SID, student.SNAME;
 
 #4.查询姓“李”的老师的个数；
-select count(teacher.tid)from teacher where teacher.tname like'李%';
+SELECT COUNT(teacher.TID) FROM teacher WHERE teacher.Tname LIKE '李%';
+
+#5.查询没学过“叶平”老师课的同学的学号、姓名；
+#张三
+SELECT test.student.Sid , test.student.Sname FROM test.student WHERE Sid NOT IN (SELECT DISTINCT(test.student.Sid) FROM student,teacher,sc,course WHERE sc.Cid=course.Cid AND course.Tid = teacher.Tid AND teacher.Tname = '张三') ;
+#叶平
+select test.student.Sid , test.student.Sname from student where Sid not in (select distinct(test.sc.Sid) from test.sc,test.teacher,test.course where test.sc.Cid=course.Cid and teacher.Tid=course.Tid and teacher.Tname='叶平');
+#  此题知识点，distinct是去重的作用
+
+#6.查询学过“```”并且也学过编号“```”课程的同学的学号、姓名；
+SELECT student.SID , student.SNAME FROM (SELECT Cid FROM course WHERE Cid = 01 AND CID = 02 )
+
+select a.SID,a.SNAME from (select student.SNAME,student.SID from student,course,sc where cname='c++'and sc.sid=student.sid and sc.cid=course.cid) a,
+                          (select student.SNAME,student.SID from student,course,sc where cname='english'and sc.sid=student.sid and sc.cid=course.cid) b where a.sid=b.sid;
+标准答案（但是好像不好使）SELECT Student.S#,Student.Sname FROM Student,SC WHERE Student.S#=SC.S# AND SC.C#='001'and exists( SELECT * FROM SC as SC_2 WHERE SC_2.S#=SC.S# AND SC_2.C#='002');
+此题知识点，exists是在集合里找数据，as就是起别名
