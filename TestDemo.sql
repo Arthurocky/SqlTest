@@ -117,3 +117,13 @@ from (select test.student.SID, test.student.sname, test.sc.SCORE
 where a.score
     < b.score
   and a.sid = b.sid;
+
+#9.查询所有课程成绩小于xx分的同学的学号、姓名；
+select test.student.SID, test.student.sname
+FROM Student
+WHERE sid not in
+    (select Student.sid
+      from sc,
+           student
+      where Student.Sid = SC.Sid
+        and score > 60) ;
