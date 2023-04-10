@@ -72,3 +72,48 @@ from (select student.SNAME, student.SID
 where student.sid = course.sid;
 ##标准答案（但是好像不好使）SELECT Student.S#,Student.Sname FROM Student,SC WHERE Student.S#=SC.S# AND SC.C#='001'and exists( SELECT * FROM SC as SC_2 WHERE SC_2.S#=SC.S# AND SC_2.C#='002');
 ##此题知识点，exists是在集合里找数据，as就是起别名
+
+##7.查询学过“叶平”老师所教的所有课的同学的学号、姓名；
+#张三
+SELECT sid, Sname
+FROM Student
+WHERE sid in (SELECT sid
+              FROM SC,
+                   Course,
+                   Teacher
+              WHERE SC.cid = Course.cid
+                AND Teacher.tid = Course.tid
+                AND Teacher.Tname = '李四'
+              GROUP BY sid
+              having count(SC.cid) = (SELECT count(cid)
+                                      FROM Course,
+                                           Teacher
+                                      WHERE Teacher.tid = Course.tid
+                                        AND Tname = '李四'));
+
+select student.sid, student.Sname
+from student
+where Sid in (select Sid
+              from sc,
+                   course,
+                   teacher
+              WHERE SC.cid = Course.cid
+                AND Teacher.tid = Course.tid
+                AND Teacher.Tname = '李四'
+);
+
+#8.查询课程编号“”的成绩比课程编号“”课程低的所有同学的学号、姓名；
+select a.Sid, a.Sname
+from (select test.student.SID, test.student.sname, test.sc.SCORE
+      from student,
+           sc
+      where student.sid = sc.sid
+        and sc.Cid = 1) as a,
+     (select test.student.SID, test.student.Sname, test.sc.Score
+      from student,
+           sc
+      where student.sid = sc.sid
+        and sc.Cid = 2) as b
+where a.score
+    < b.score
+  and a.sid = b.sid;
